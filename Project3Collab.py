@@ -22,7 +22,9 @@ def CollabFilter(train, test):
     #Similarity Matrix
     #Training 
     ds2 = train.pivot(index = 'custId', columns = 'movieId', values = 'rating')
+    print('pivot done')
     usrMean = ds2.mean(axis = 1)
+    print('mean calculated')
     corMtrx = ds2.T.corr().fillna(0)
     print('cormatrix created')
     
@@ -41,7 +43,7 @@ def CollabFilter(train, test):
         #check if user i is in user count
         if useri in usrCount:
             print('check if i rated smthng')
-            useriMean = usrMean.loc(useri) #use the users mean
+            useriMean = usrMean.loc[useri] #use the users mean
         else:
             useriMean = mom #use the pop mean
         if movk in movCount:
@@ -61,7 +63,9 @@ def CollabFilter(train, test):
                 collRate = 0
         else:
             collRate = 0 
+        print('calculating rating')
         rateik = useriMean + collRate
+        print('rounding and scaling rating')
         preds.append(round(max(min(rateik, 5), 1), 1))
     return preds
 
