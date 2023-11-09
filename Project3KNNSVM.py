@@ -6,7 +6,8 @@ import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+
 
 
 #Loads the data from the MNSIT
@@ -23,20 +24,41 @@ def LoadData():
 
 def KNearestNeighbors(X_train ,X_test,label_test,label_train):
     print('BEGIN K NEAREST NEIGHBORS CLASSIFIER')
-    #Parameters that are being changed are N_neighbors, weight, and the p parameter
-    #the values that are chosen are N_Neighbors: [3,5,7] weights: [distance, uniform], and p: [1,2]
-    KNNClassifier = KNeighborsClassifier(n_neighbors=7,weights='distance',p=2)
-    KNNClassifier.fit(X_train,label_train)
+    #HYPERPARAMETERS
+    n_neighbors = [3, 5, 7]
+    weights = ['distance', 'uniform']
+    p_param = [1,2]
 
-    pred = KNNClassifier.predict(X_test)
+    for n in n_neighbors:
+        for w in weights:
+            for p in p_param:
+                KNNClassifier = KNeighborsClassifier(n_neighbors=n, weights=w, p=p)
+                KNNClassifier.fit(X_train,label_train)
+                pred = KNNClassifier.predict(X_test)
+                accuracy = metrics.accuracy_score(label_test,pred)
+                rmse = metrics.mean_squared_error(label_test, pred)
+                mae = metrics.mean_absolute_error(label_test, pred)
+                print('parameters are: n_neighbor = {}, weight ={}, p = {}'.format(n,w,p))
+                print('KNN Accuracy Score: {}'.format(accuracy))
+                print('KNN RMSE: {}'.format(rmse))
+                print('KNN MAE: {}'.format(mae))
+                print('-----------')
+                print()
 
-    accuracy = metrics.accuracy_score(label_test,pred)
-    print('parameters are: n_neighbor = 7, weight = distance, p = 2')
-    print('KNN Accuracy Score: {}'.format(accuracy))
-    print('KNN Error Rate: {}'.format(1-accuracy))
+
+    # KNNClassifier = KNeighborsClassifier(n_neighbors=7,weights='distance',p=2)
+    # KNNClassifier.fit(X_train,label_train)
+
+    # pred = KNNClassifier.predict(X_test)
+
+    # accuracy = metrics.accuracy_score(label_test,pred)
+    # print('parameters are: n_neighbor = 7, weight = distance, p = 2')
+    # print('KNN Accuracy Score: {}'.format(accuracy))
+    # print('KNN Error Rate: {}'.format(1-accuracy))
     print('END K NEAREST NEIGHBORS CLASSIFIER')
     print('------------------------------------------')
     return 
+
 def SVM(X_train, X_test, label_test, label_train):
     print('BEGIN SVM CLASSIFIER')
     
@@ -53,10 +75,14 @@ def SVM(X_train, X_test, label_test, label_train):
                 
                 pred = svm.predict(X_test)
                 accuracy = metrics.accuracy_score(label_test,pred)
+                rmse = metrics.mean_squared_error(label_test, pred)
+                mae = metrics.mean_absolute_error(label_test, pred)
                 print('parameters are: kernel = {}, C value = {}, gamma = {}'.format(k,c,g))
                 print('SVM Accuracy Score: {}'.format(accuracy))
-                print('SVM Error Rate: {}'.format(1-accuracy))
+                print('SVM RMSE: {}'.format(rmse))
+                print('SVM MAE: {}'.format(mae))
                 print('-----------')
+                print()
 
     # k = 'rbf'
     # c = 0.1
@@ -70,7 +96,8 @@ def SVM(X_train, X_test, label_test, label_train):
     # print('parameters are: kernel = {}, C value = {}, gamma = {}'.format(k,c,g))
     # print('SVM Accuracy Score: {}'.format(accuracy))
     # print('SVM Error Rate: {}'.format(1-accuracy))
-
+    print('END SVM CLASSIFIER')
+    print('------------------------------------------')
     return
 warnings.filterwarnings("ignore", category=FutureWarning)
 

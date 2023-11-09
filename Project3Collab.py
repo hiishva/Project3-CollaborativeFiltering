@@ -76,3 +76,10 @@ testData.columns = ['movieId', 'custId', 'rating']
 trainData.columns = ['movieId','custId','rating']
 preds = CollabFilter(trainData,testData)
 print(preds[0])
+
+#analysis
+testData['preds'] = preds
+rmse = mean_squared_error(testData['rating'], testData['preds'])
+mae = mean_absolute_error(testData['rating'], testData['preds'])
+print('RMSE of collab: {}'.format(rmse))
+print('MAE of collab: {}'.format(mae))
